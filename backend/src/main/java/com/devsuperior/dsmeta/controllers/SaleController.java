@@ -26,7 +26,7 @@ public class SaleController {
 	@Autowired //serve para injetar uma instancia da classe que está embaixo dele
 	private SaleService service;
 	
-	@GetMapping // usando o verbo get do http
+	@GetMapping // para o método abaixo responder usando o verbo get do http
 	public List<Sale> findSales(){
 		return service.findSales();
 	}
