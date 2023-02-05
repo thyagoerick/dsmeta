@@ -107,7 +107,7 @@ function SalesCard() {
         // formatando data
         const dmin = minDate.toISOString().slice(0,10);
         const dmax = maxDate.toISOString().slice(0,10);
-        console.log(dmin);
+        
         /** 
          * A requisição retorna um objeto especial do JS chamado "promisse"
          * Promisse, resumidamente, é um objeto que vai executar alguma operação
@@ -182,7 +182,7 @@ function SalesCard() {
                                         <td>R$ {sale.amount.toFixed(2)}</td>
                                         <td>
                                             <div className="dsmeta-red-btn-container">
-                                                <NotificationButton />
+                                                <NotificationButton saleId={sale.id}/>
                                             </div>
                                         </td>
                                     </tr>
