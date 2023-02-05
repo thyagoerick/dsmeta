@@ -1,7 +1,4 @@
 # Projeto DSMETA - Thyago Erick
-[Demonstração](./DemonstracaoDSMeta_Thyago.mp4)
-
-
 https://user-images.githubusercontent.com/50061996/216807438-781d0eaa-06a0-4eae-b999-2332f27f4029.mp4
 
 ## Ferramentas:
