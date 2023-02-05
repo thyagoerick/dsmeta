@@ -104,6 +104,10 @@ function SalesCard() {
     const [sales, setSales] = useState<Sale[]>([]);
 
     useEffect(() => {
+        // formatando data
+        const dmin = minDate.toISOString().slice(0,10);
+        const dmax = maxDate.toISOString().slice(0,10);
+        console.log(dmin);
         /** 
          * A requisição retorna um objeto especial do JS chamado "promisse"
          * Promisse, resumidamente, é um objeto que vai executar alguma operação
@@ -111,14 +115,15 @@ function SalesCard() {
          * usamos a função .then(), que vai receber o objeto da resposta que deu 
          * certo, e podemos manipulá-lo da forma que queremos.
          */
-        axios.get(`${BASE_URL}/sales`)
+        axios.get(`${BASE_URL}/sales?minDate=${dmin}&maxDate=${dmax}`)
             .then(response => {
                 //.data = exibe os dados da resposta
                 // .content = pega apenas a lista de vendas
                 // chamar a setSales para atualizar o setSales com o valor da API
                 setSales(response.data.content);
             })
-    }, []);
+    }, [minDate, maxDate]);
+    //     \-> configurando o use Effect para atualizar/mudar quando algum dos dados declarados no array mudar
 
     return (
         <div className="dsmeta-card">
