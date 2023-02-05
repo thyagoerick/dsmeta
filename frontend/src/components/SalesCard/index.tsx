@@ -2,6 +2,8 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { Sale } from "../../models/sale";
+import { BASE_URL } from "../../utils/request";
 import NotificationButton from '../NotificationButton';
 import './style.css';
 
@@ -57,41 +59,49 @@ function SalesCard() {
     const min = new Date(new Date().setDate(new Date().getDate() - 365));
     const max = new Date();
 
-/** State Hook:
- *  
- *  \-> useState é um Hook. Nós o chamamos dentro de um componente 
- *      funcional para adicionar alguns states locais a ele. React 
- *      irá preservar este state entre re-renderizações;
- *  
- *  \-> useState retorna um par: o valor do state atual e uma função 
- *      que permite atualizá-lo. Você pode chamar essa função a partir 
- *      de um manipulador de evento ou de qualquer outro lugar. É 
- *      parecido com this.setState em uma classe, exceto que não 
- *      mescla o antigo state com o novo;
- *  
- *  \-> O único argumento para useState é o state inicial;
- *  
- *  \-> Diferente de this.state, o state não precisa ser um objeto — 
- *      apesar de que possa ser se você quiser. 
- *  
- *  \-> O argumento de state inicial é utilizado apenas durante a 
- *      primeira renderização.
- */ 
+    /** State Hook:
+     *  
+     *  \-> useState é um Hook. Nós o chamamos dentro de um componente 
+     *      funcional para adicionar alguns states locais a ele. React 
+     *      irá preservar este state entre re-renderizações;
+     *  
+     *  \-> useState retorna um par: o valor do state atual e uma função 
+     *      que permite atualizá-lo. Você pode chamar essa função a partir 
+     *      de um manipulador de evento ou de qualquer outro lugar. É 
+     *      parecido com this.setState em uma classe, exceto que não 
+     *      mescla o antigo state com o novo;
+     *  
+     *  \-> O único argumento para useState é o state inicial;
+     *  
+     *  \-> Diferente de this.state, o state não precisa ser um objeto — 
+     *      apesar de que possa ser se você quiser. 
+     *  
+     *  \-> O argumento de state inicial é utilizado apenas durante a 
+     *      primeira renderização.
+     */
 
- /** Hook de Efeito:
- *  
- *  \-> O Hook de Efeito, useEffect, adiciona a funcionalidade de 
- *      executar efeitos colaterais através de um componente funcional. 
- *      Segue a mesma finalidade do componentDidMount, componentDidUpdate, 
- *      e componentWillUnmount em classes React, mas unificado em uma mesma API.
- * 
- */
+    /** Hook de Efeito:
+    *  
+    *  \-> O Hook de Efeito, useEffect, adiciona a funcionalidade de 
+    *      executar efeitos colaterais através de um componente funcional. 
+    *      Segue a mesma finalidade do componentDidMount, componentDidUpdate, 
+    *      e componentWillUnmount em classes React, mas unificado em uma mesma API.
+    * 
+    */
 
     //Declaração de um estado dentrro de um componente react
     //desestruturação com useState
     //    dado ,   função que altera o dado
     const [minDate, setMinDate] = useState(min);
     const [maxDate, setMaxDate] = useState(max);
+
+    /**
+     * - useState para armazenar a lista de vendas
+     *                                /-> useState tipado, com o tipo dentro de <>, 
+     *                                |   que nesse caso será uma lista de Sale 
+     *                                |
+                                      |         /-> lista vazia                       */
+    const [sales, setSales] = useState<Sale[]>([]);
 
     useEffect(() => {
         /** 
@@ -100,12 +110,14 @@ function SalesCard() {
          * essa operação pode dar certo ou falhar, para capturar o que dá certo
          * usamos a função .then(), que vai receber o objeto da resposta que deu 
          * certo, e podemos manipulá-lo da forma que queremos.
-         */ 
-        axios.get("http://localhost:8080/sales")
-        .then(response => {
-            //.data = exibe os dados da resposta
-            console.log(response.data);
-        })
+         */
+        axios.get(`${BASE_URL}/sales`)
+            .then(response => {
+                //.data = exibe os dados da resposta
+                // .content = pega apenas a lista de vendas
+                // chamar a setSales para atualizar o setSales com o valor da API
+                setSales(response.data.content);
+            })
     }, []);
 
     return (
@@ -144,45 +156,34 @@ function SalesCard() {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td className="show992">#341</td>
-                            <td className="show576">08/07/2022</td>
-                            <td>Anakin</td>
-                            <td className="show992">15</td>
-                            <td className="show992">11</td>
-                            <td>R$ 55300.00</td>
-                            <td>
-                                <div className="dsmeta-red-btn-container">
-                                    <NotificationButton />
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="show992">#341</td>
-                            <td className="show576">08/07/2022</td>
-                            <td>Anakin</td>
-                            <td className="show992">15</td>
-                            <td className="show992">11</td>
-                            <td>R$ 55300.00</td>
-                            <td>
-                                <div className="dsmeta-red-btn-container">
-                                    <NotificationButton />
-                                </div>
-                            </td>
-                        </tr>
-                        <tr>
-                            <td className="show992">#341</td>
-                            <td className="show576">08/07/2022</td>
-                            <td>Anakin</td>
-                            <td className="show992">15</td>
-                            <td className="show992">11</td>
-                            <td>R$ 55300.00</td>
-                            <td>
-                                <div className="dsmeta-red-btn-container">
-                                    <NotificationButton />
-                                </div>
-                            </td>
-                        </tr>
+                        {
+                            //.map percorre a lista e fazer alguma operação com cada elemento da lista
+                            //         /-> Apelido, pode ser qualquer nome, escolhe-se o mais semântico
+                            sales.map(sale => {
+                                return (
+                                    /**
+                                     *  Exigência do React:
+                                     *  \-> Quando se faz uma rendenrização de conteúdo baseado em uma lista
+                                     *      temos que colocar em cada elemento um atributo que se chama key,
+                                     *      e temos que colocar um valor único para essa key.    
+                                     *   
+                                     */
+                                    <tr key={sale.id}>
+                                        <td className="show992">{sale.id}</td>
+                                        <td className="show576">{new Date(sale.date).toLocaleDateString()}</td>
+                                        <td>{sale.sallerName}</td>
+                                        <td className="show992">{sale.visited}</td>
+                                        <td className="show992">{sale.deals}</td>
+                                        <td>R$ {sale.amount.toFixed(2)}</td>
+                                        <td>
+                                            <div className="dsmeta-red-btn-container">
+                                                <NotificationButton />
+                                            </div>
+                                        </td>
+                                    </tr>
+                                )
+                            })
+                        }
                     </tbody>
 
                 </table>
