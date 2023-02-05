@@ -102,7 +102,7 @@ twilio.phone.to=${TWILIO_PHONE_TO}
 
 ## O que foi aprendido?
 
-- Salvar os projeto no Github em monorepo;
+- Salvar os projetos no Github em monorepo;
     - Esclarecimentos sobre o monorepo
     
 - Criar projetos backend e frontend
